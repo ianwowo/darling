@@ -17,6 +17,10 @@ if (TARGET_i386 OR TARGET_x86_64)
 	add_definitions(-Dmovsxw=movsw)
 endif ()
 
+if (TARGET_ARM64)
+	add_definitions(-D__SOFTFP__) # for modf
+endif ()
+
 set(libm_sources
 	Source/abs.c
 	Source/sincos.c
@@ -153,11 +157,37 @@ if (TARGET_i386 OR TARGET_x86_64)
 	)
 elseif (TARGET_ARM64)
 	set(libm_sources ${libm_sources}
-		Source/ARM/nan.c
+		Source/ARM/acos_freeBSD.c
+		Source/ARM/acosh_freeBSD.c
+		Source/ARM/asin_freeBSD.c
+		Source/ARM/asinh_freeBSD.c
+		Source/ARM/atanh_freeBSD.c
+		Source/ARM/cosh_freeBSD.c
+		Source/ARM/exp_freeBSD.c
+		Source/ARM/exp2_freeBSD.c
+		Source/ARM/expm1_freeBSD.c
+		Source/ARM/erf.c
+		Source/ARM/fdim.c
+		#Source/ARM/fenv.c # this is not the arm64 version, so _FE_DFL_ENV exported from stub.c instead
 		Source/ARM/fpclassify.c
+		Source/ARM/ilogb.c
+		Source/ARM/fmod.c
+		Source/ARM/fmodf.c
+		Source/ARM/log.c
 		Source/ARM/logb.c
 		Source/ARM/logbf.c
+		Source/ARM/modf_IncrediblySkanky.c
+		Source/ARM/nan.c
+		Source/ARM/nearbyint.c
+		Source/ARM/scalb.c
+		Source/ARM/scalbln.c
+		Source/ARM/scalblnf.c
+		Source/ARM/sin_cos_scalbn_fdlibm.c
+		Source/ARM/sinh_freeBSD.c
+		Source/ARM/sqrt.c
+		Source/ARM/sqrtf.c
 		Source/ARM/stub.c
+		Source/ARM/tanh_freeBSD.c
 	)
 endif ()
 
