@@ -83,8 +83,13 @@ reexport(CoreServices SearchKit ${SearchKit_BUILD})
 reexport(CoreServices SharedFileList ${SharedFileList_BUILD})
 reexport(CoreServices OSServices ${OSServices_BUILD})
 
-set_property(TARGET CoreServices APPEND_STRING PROPERTY
-  LINK_FLAGS " -Wl,-reexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/reexport.exp")
+if (TARGET_ARM64) # we're missing functions from libm to reexport, or they don't exist on arm64, so a much shorter list of reexports
+	set_property(TARGET CoreServices APPEND_STRING PROPERTY
+	LINK_FLAGS " -Wl,-reexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/reexport.arm64.exp")
+else()
+	set_property(TARGET CoreServices APPEND_STRING PROPERTY
+	LINK_FLAGS " -Wl,-reexported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/reexport.exp")
+endif ()
 
 install(FILES SystemVersion.plist DESTINATION "libexec/darling/System/Library/CoreServices")
 install(FILES SystemVersionCompat.plist DESTINATION "libexec/darling/System/Library/CoreServices")
