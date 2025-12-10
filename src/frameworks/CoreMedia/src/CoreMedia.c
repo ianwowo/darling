@@ -26,6 +26,14 @@
 const CFStringRef kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms = CFSTR("SampleDescriptionExtensionAtoms");
 const CFStringRef kCMSampleAttachmentKey_NotSync = CFSTR("NotSync");
 
+const CFStringRef kCMFormatDescriptionColorPrimaries_DCI_P3 = CFSTR("DCI_P3"); // same as kCVImageBufferColorPrimaries_DCI_P3
+const CFStringRef kCMFormatDescriptionColorPrimaries_P3_D65 = CFSTR("P3_D65"); // same as kCVImageBufferColorPrimaries_P3_D65
+const CFStringRef kCMFormatDescriptionColorPrimaries_ITU_R_2020 = CFSTR("ITU_R_2020"); // same as kCVImageBufferColorPrimaries_ITU_R_2020
+const CFStringRef kCMFormatDescriptionColorPrimaries_P22 = CFSTR("P22"); // same as kCVImageBufferColorPrimaries_P22
+
+const CFStringRef kCMFormatDescriptionExtension_FormatName = CFSTR("FormatName");	// CFString
+const CFStringRef kCMFormatDescriptionExtension_Depth = CFSTR("Depth");			// CFNumber with depth value as directed by http://developer.apple.com/qa/qa2001/qa1183.html
+
 static int verbose = 0;
 
 __attribute__((constructor))

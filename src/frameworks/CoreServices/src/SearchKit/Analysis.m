@@ -1,7 +1,7 @@
 /*
  This file is part of Darling.
 
- Copyright (C) 2019 Lubos Dolezel
+ Copyright (C) 2025 Darling Developers
 
  Darling is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,16 +17,8 @@
  along with Darling.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#import <PDFKit/PDFKitExport.h>
-#import <Foundation/Foundation.h>
+#import "../../include/SearchKit/Analysis.h"
 
-typedef NSString *PDFDocumentAttribute;
-
-PDFKIT_EXPORT PDFDocumentAttribute const PDFDocumentAuthorAttribute;
-PDFKIT_EXPORT PDFDocumentAttribute const PDFDocumentCreationDateAttribute;
-PDFKIT_EXPORT PDFDocumentAttribute const PDFDocumentKeywordsAttribute;
-PDFKIT_EXPORT PDFDocumentAttribute const PDFDocumentTitleAttribute;
-
-@interface PDFDocument : NSObject
-
-@end
+const CFStringRef kSKMinTermLength = CFSTR("kSKMinTermLength");
+const CFStringRef kSKMaximumTerms = CFSTR("kSKMaximumTerms");
+const CFStringRef kSKProximityIndexing = CFSTR("kSKProximityIndexing");

@@ -60,6 +60,16 @@ NSString *const AVVideoHeightKey = @"AVVideoHeightKey";
 NSString *const AVVideoMaxKeyFrameIntervalKey = @"MaxKeyFrameInterval";
 NSString *const AVVideoWidthKey = @"AVVideoWidthKey";
 
+NSString *const AVLinearPCMIsBigEndianKey = @"IsBigEndian";
+NSString *const AVLinearPCMIsFloatKey = @"IsFloat";
+NSString *const AVLinearPCMIsNonInterleaved = @"IsNonInterleaved";
+
+NSString *const AVVideoCleanApertureKey = @"AVVideoCleanAperture";
+NSString *const AVVideoCleanApertureWidthKey = @"Width"; /* NSNumber */
+NSString *const AVVideoCleanApertureHeightKey = @"Height"; /* NSNumber */
+NSString *const AVVideoCleanApertureHorizontalOffsetKey = @"HorizontalOffset"; /* NSNumber */
+NSString *const AVVideoCleanApertureVerticalOffsetKey = @"VerticalOffset"; /* NSNumber */
+
 const AVCaptureSessionPreset AVCaptureSessionPreset3840x2160 = @"AVCaptureSessionPreset3840x2160";
 const AVCaptureSessionPreset AVCaptureSessionPreset1920x1080 = @"AVCaptureSessionPreset1920x1080";
 const AVCaptureSessionPreset AVCaptureSessionPreset1280x720 = @"AVCaptureSessionPreset1280x720";
