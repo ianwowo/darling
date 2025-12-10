@@ -103,6 +103,37 @@ void* __mldr_main_stack_top = NULL;
 static int kernel_major = -1;
 static int kernel_minor = -1;
 
+//#define MLDR_RENAME_PROCESSES_WITH_CMD_SUFFIX
+
+#ifdef MLDR_RENAME_PROCESSES_WITH_CMD_SUFFIX
+
+#include <sys/prctl.h>
+
+char* replace_char(char* str, char find, char replace){
+    char *current_pos = strchr(str,find);
+    while (current_pos) {
+        *current_pos = replace;
+        current_pos = strchr(current_pos,find);
+    }
+    return str;
+}
+
+// PR_SET_NAME: max 16 bytes including NUL
+static inline void mldr_set_name_for_cmd(const char* cmd_path) {
+    const char* base = cmd_path ? strrchr(cmd_path, '/') : NULL;
+    base = base ? base + 1 : (cmd_path ? cmd_path : "unknown");
+    char name[16]; // kernel truncates to 15 + NUL
+    // Prefix helps disambiguate in ps/lldb, remainder is command basename
+    // Keep under 15 chars total (prefix + payload)
+    snprintf(name, sizeof(name), "mldr-%.*s", (int)(15 - 5), base); // 5 = len("mldr-")
+	replace_char(name, ' ', '-');
+    // Set the process (main thread) name
+	fprintf(stderr, "Renaming process mldr as %s\n", name);
+    prctl(PR_SET_NAME, (unsigned long)name, 0UL, 0UL, 0UL);
+}
+
+#endif // MLDR_RENAME_PROCESSES_WITH_CMD_SUFFIX
+
 int main(int argc, char** argv, char** envp)
 {
 	void** sp;
@@ -147,6 +178,11 @@ int main(int argc, char** argv, char** envp)
 		filename = (char*) __builtin_alloca(strlen(argv[1])+1);
 		strcpy(filename, argv[1]);
 	}
+
+#ifdef MLDR_RENAME_PROCESSES_WITH_CMD_SUFFIX
+	// rename our process to that of the command to make it easier to attach to with lldb -n --waitfor
+	mldr_set_name_for_cmd(filename);
+#endif // MLDR_RENAME_PROCESSES_WITH_CMD_SUFFIX
 
 	// allow any process to ptrace us
 	// the only process we really care about being able to do this is the server,
@@ -716,13 +752,18 @@ int __mldr_create_rpc_socket(void) {
 		// we have to put it away ourselves here because `fd` is not yet valid, so we can't close() it in the error handler
 		socket_bitmap_put(&socket_bitmap, fd);
 		fd = -1;
-		goto err_out;
+		//goto err_out;
+
+		// workaround for AWS Linux 2023, perhaps MAX_OPEN is different?
+		fprintf(stderr, "__mldr_create_rpc_socket: Failed to dup2 socket fd, falling back on using it directly\n");
+		fd = pre_fd;
 	}
-
-	close(pre_fd);
-	pre_fd = -1;
-
-	// `fd` now contains the socket with the desired FD number returned by `socket_bitmap_get`
+	else // normal flow
+	{
+		close(pre_fd);
+		pre_fd = -1;
+		// `fd` now contains the socket with the desired FD number returned by `socket_bitmap_get`
+	}
 
 	int fd_flags = fcntl(fd, F_GETFD);
 	if (fd_flags < 0) {
