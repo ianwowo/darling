@@ -238,7 +238,8 @@ if (COMPONENT_cli)
 	add_subdirectory(external/libtelnet)
 	add_subdirectory(external/remote_cmds)
 	add_subdirectory(external/IOKitTools)
-	add_subdirectory(external/apr)
+	#! missing Undefined symbols for architecture x86_64: "_opendir", "_readdir_r", "_rewinddir", referenced from: _apr_dir_open, _apr_dir_read, _apr_dir_rewind in dir-32-bit-inode.c.o
+	#add_subdirectory(external/apr)
 	add_subdirectory(xcselect)
 	add_subdirectory(external/file/file)
 	add_subdirectory(external/shell_cmds)
@@ -351,8 +352,10 @@ if (COMPONENT_gui)
 	add_subdirectory(external/cups)
 	add_subdirectory(pboard)
 
-	# not currently used by anything we build
-	add_subdirectory(external/dbuskit)
+	if (NOT TARGET_ARM64) # "error: too many arguments to function call, expected 0, have 3" on ARM64
+		# not currently used by anything we build
+		add_subdirectory(external/dbuskit)
+	endif()
 endif()
 
 if (COMPONENT_python)
