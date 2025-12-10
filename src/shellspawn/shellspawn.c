@@ -283,8 +283,12 @@ void spawnShell(int fd)
 
 		// In future, we may support spawning something else than Bash
 		// and check the provided shell against /etc/shells
-		execv(alloc_exec ? alloc_exec : "/bin/bash", argv);
-
+#if 1 // __arm64__
+		printf("ShellSpawn: Using zsh instead of bash (which currently crashes on ARM64)\n");
+		execv(alloc_exec ? alloc_exec : "/bin/zsh", argv);
+#else
+		//execv(alloc_exec ? alloc_exec : "/bin/bash", argv);
+#endif
 		rv = errno;
 		write(pipefd[1], &rv, sizeof(rv));
 		close(pipefd[1]);
