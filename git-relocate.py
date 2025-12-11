@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 class SubModule:
     def __init__(self, url_key: str, url: str):
@@ -75,6 +76,9 @@ def replace_submodule_link(mod: SubModule, new_link):
     
 
 if __name__ == "__main__":
+
+    simulate = not ((len(sys.argv) == 2) and (sys.argv[1] == '-f'))
+
     my_repo_link = get_my_repo_link()
     assert(my_repo_link and "https://github.com" in my_repo_link)
     print(f"Main Repository URL:\n\t{my_repo_link}\n")
@@ -87,10 +91,18 @@ if __name__ == "__main__":
                 new_link = f"https://github.com/{UPSTREAM_GITHUB_USER}/{mod.url.split('/')[1]}"
                 print("\t %-80s -> %-80s" % (mod.url, new_link))
                 darlinghq += 1
-                replace_submodule_link(mod, new_link)
+                if not simulate:
+                    replace_submodule_link(mod, new_link)
             else:
                 print("\t %-80s (unchanged)" % (mod.url))
         else:
                 print("\t %-80s (in CLONED_SUBMODULES)" % (mod.url))
                 forked += 1
-    print(f"{forked+darlinghq} submodules: {forked} are forked and {darlinghq} darlinghq")
+    
+    if simulate:
+        print(f"Simulated: {forked+darlinghq} submodules: {forked} are forked and {darlinghq} need pointing to darlinghq. run with -f to apply changes.")
+    else:
+        if darlinghq > 0:
+            print(f"Applied to: {forked+darlinghq} submodules: {forked} are forked and {darlinghq} pointed to darlinghq. you can now commit submodule changes.")
+        else:
+            print(f"Nothing to do: {forked+darlinghq} submodules: {forked} are forked and {darlinghq} need pointing to darlinghq.")
